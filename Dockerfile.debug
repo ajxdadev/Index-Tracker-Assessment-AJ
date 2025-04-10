@@ -1,0 +1,8 @@
+# File: Dockerfile.debug
+FROM alpine
+
+WORKDIR /debug
+
+COPY . .
+
+RUN echo "===== FILES IN CONTEXT =====" && find . -type f

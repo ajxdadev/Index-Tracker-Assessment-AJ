@@ -1,0 +1,36 @@
+Index Construction API
+• POST /build-index
+o Inputs: start_date, end_date (optional).
+o Construct the equal-weighted index dynamically for the given dates:
+§ Select top 100 stocks daily by market cap.
+§ Assign equal weights.
+§ Persist compositions and performance.
+§ Cache results in Redis.
+
+• Important: Index building must happen at API runtime, not during ingestion. Ensure
+you understand the principles behind equal weighSng, including how noSonal
+weights are assigned and rebalanced.
+4. Index Retrieval APIs
+
+Endpoint Function
+
+GET /index-
+performance?start_date=&end_date=
+
+Return daily returns and cumulative returns
+(cached).
+
+GET /index-composition?date= Return 100-stock composition for a given
+
+date (cached).
+
+GET /composition-
+changes?start_date=&end_date=
+
+List days when composition changed, with
+stocks entered/exited (cached).
+
+• Responses must be JSON.
+
+DB: DuckDB
+
