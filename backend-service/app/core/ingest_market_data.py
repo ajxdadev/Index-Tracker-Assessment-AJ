@@ -17,7 +17,7 @@ import time
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))) #added for local debug
 #print("sys.path =", sys.path)
 from bootstrap import *
-from DB.duckdb_connection import get_connection
+from app.DB.duckdb_connection import get_connection
 from core.get_symbols_list import get_sp500_symbols_from_ivv
 
 def fetch_metadata(ticker_obj):

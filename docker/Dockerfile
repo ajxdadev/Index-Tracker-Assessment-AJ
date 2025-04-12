@@ -12,10 +12,10 @@ RUN python -m pip install -r requirements.txt
 
 RUN echo "Root context:" && ls -al /app
 
-COPY ./backend-service app/backend-service
+COPY ./backend-service backend-service
 WORKDIR /app/backend-service
 #COPY backend-service/app /app/app
-#OPY backend-service/main.py /app/main.py
+#COPY backend-service/main.py /app/main.py
 
 
 # Creates a non-root user with an explicit UID and adds permission to access the /app folder

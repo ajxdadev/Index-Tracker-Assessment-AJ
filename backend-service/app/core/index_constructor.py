@@ -3,7 +3,7 @@ import sys
 import os
 from datetime import datetime, timedelta
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))) #added for local debug
-from DB.duckdb_connection import get_connection
+from app.DB.duckdb_connection import get_connection
 
 TOP_N = 100
 BASE_INDEX_VALUE = 1000
