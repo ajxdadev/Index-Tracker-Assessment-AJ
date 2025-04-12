@@ -10,12 +10,15 @@ services:
     volumes:
     #  - ../:/app
       - ../backend-service:/app/backend-service
+      - type: bind
+        source: ../backend-service/app/index.db
+        target: /app/backend-service/app/index.db
     depends_on:
       - redis
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - DB_PATH=/app/backend-service/DB/index.db
+      - DB_PATH=app/index.db
     networks:
       - backend-net
 
