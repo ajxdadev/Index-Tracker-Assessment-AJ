@@ -8,8 +8,8 @@ app = FastAPI(
 )
 
 # Register routers
-app.include_router(eql_index_api.router, prefix="/services")
-app.include_router(data_exporter.router, prefix="/services")
+app.include_router(eql_index_api.router, prefix="/indexservices")
+app.include_router(data_exporter.router, prefix="/exportservices")
 
 @app.get("/")
 def root():
