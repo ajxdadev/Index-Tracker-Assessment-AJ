@@ -25,6 +25,7 @@ def get_index_performance(
     cache_key = f"index_performance:{start_date}:{end_date}"
     cached = get_cache(cache_key)
     if cached:
+        print("Returning result from redis cache!!")
         return cached
 
     conn = get_connection()
@@ -75,6 +76,7 @@ def get_index_composition(
     cache_key = f"index_composition:{date}"
     cached = get_cache(cache_key)
     if cached:
+        print("Returning result from redis cache!!")
         return cached
     
     conn = get_connection()
@@ -125,6 +127,7 @@ def get_composition_changes(
     cache_key = f"composition_changes:{start}:{end}"
     cached = get_cache(cache_key)
     if cached:
+        print("Returning result from redis cache!!")
         return cached
     
     conn = get_connection()
