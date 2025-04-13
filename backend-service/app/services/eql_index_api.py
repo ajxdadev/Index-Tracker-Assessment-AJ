@@ -2,7 +2,7 @@ from fastapi import APIRouter, Query
 from typing import Optional
 from datetime import datetime
 from app.DB.duckdb_connection import get_connection
-from app.core.redis_cache import get_cache, set_cache
+from app.cache.redis_cache import get_cache, set_cache
 
 router = APIRouter()
 
