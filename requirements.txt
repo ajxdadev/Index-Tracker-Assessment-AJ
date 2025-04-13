@@ -9,3 +9,4 @@ openpyxl
 yfinance
 python-dotenv
 pytest
+xlsxwriter

@@ -48,7 +48,7 @@ def export_data(
             SELECT date, symbol,
                    RANK() OVER (PARTITION BY date ORDER BY market_cap DESC) AS rnk
             FROM daily_price_data
-            WHERE date BETWEEN DATE(?, '-1 day') AND ?
+            WHERE date BETWEEN (? - INTERVAL 1 DAY) AND ?
         ),
         top100 AS (
             SELECT date, symbol
@@ -60,7 +60,7 @@ def export_data(
             FROM top100 curr
             LEFT JOIN top100 prev
               ON curr.symbol = prev.symbol
-             AND curr.date = DATE(prev.date, '+1 day')
+             AND curr.date = prev.date + INTERVAL 1 DAY
             WHERE prev.symbol IS NULL
         ),
         exited AS (
@@ -68,7 +68,7 @@ def export_data(
             FROM top100 prev
             LEFT JOIN top100 curr
               ON prev.symbol = curr.symbol
-             AND curr.date = DATE(prev.date, '-1 day')
+             AND curr.date = prev.date - INTERVAL 1 DAY
             WHERE curr.symbol IS NULL
         )
         SELECT * FROM entered
@@ -83,7 +83,6 @@ def export_data(
         index_df.to_excel(writer, index=False, sheet_name="Index Performance")
         composition_df.to_excel(writer, index=False, sheet_name="Daily Composition")
         changes_df.to_excel(writer, index=False, sheet_name="Composition Changes")
-        writer.save()
 
     output.seek(0)
     filename = f"index_export_{start}_{end}.xlsx"
