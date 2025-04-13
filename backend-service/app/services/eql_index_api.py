@@ -2,6 +2,7 @@ from fastapi import APIRouter, Query
 from typing import Optional
 from datetime import datetime
 from app.DB.duckdb_connection import get_connection
+from app.core.redis_cache import get_cache, set_cache
 
 router = APIRouter()
 
@@ -20,6 +21,11 @@ def get_index_performance(
 
     if start > end:
         return {"error": "start_date must be earlier than end_date."}
+
+    cache_key = f"index_performance:{start_date}:{end_date}"
+    cached = get_cache(cache_key)
+    if cached:
+        return cached
 
     conn = get_connection()
     query = f"""
@@ -46,13 +52,15 @@ def get_index_performance(
     percent_change = ((index_end - index_start) / index_start) * 100
     direction = "grew" if percent_change >= 0 else "declined"
 
-    return {
+    response = {
         "start_date": str(start),
         "end_date": str(end),
         "performance_change": f"{percent_change:.2f}%",
         "message": f"Index {direction} by {abs(percent_change):.2f}% between {start} and {end}.",
         "values": values
     }
+    set_cache(cache_key, response)
+    return response
 
 @router.get("/composition")
 def get_index_composition(
@@ -63,6 +71,12 @@ def get_index_composition(
     except ValueError:
         return {"error": "Invalid date format. Use YYYY-MM-DD."}
 
+    #check if exist in redis cache, if yes return from cache
+    cache_key = f"index_composition:{date}"
+    cached = get_cache(cache_key)
+    if cached:
+        return cached
+    
     conn = get_connection()
 
     # Data exist check
@@ -84,10 +98,12 @@ def get_index_composition(
     constituents = [{"symbol": row[0], "weight": "1.00%"} for row in top_100]
 
     conn.close()
-    return {
+    response = {
         "date": str(day),
         "constituents": constituents
     }
+    set_cache(cache_key, response)
+    return response
 
 @router.get("/composition-changes")
 def get_composition_changes(
@@ -105,6 +121,12 @@ def get_composition_changes(
     if start >= end:
         return {"error": "start_date must be before end_date"}
 
+    #check if exist in redis cache, if yes return from cache
+    cache_key = f"composition_changes:{start}:{end}"
+    cached = get_cache(cache_key)
+    if cached:
+        return cached
+    
     conn = get_connection()
     dates = conn.execute("""
         SELECT DISTINCT date
@@ -148,4 +170,6 @@ def get_composition_changes(
             })
 
     conn.close()
-    return {"changes": changes}
+    response = {"changes": changes}
+    set_cache(cache_key,response)
+    return response
