@@ -77,6 +77,15 @@ def export_data(
         ORDER BY date, change_type, symbol
     """, (start, end)).df()
 
+    #get rid of blank/unwanted columns
+    index_df.columns = ["Date", "Index Value"]
+    composition_df.columns = ["Date", "Symbol", "Close Price", "Market Cap"]
+    changes_df.columns = ["Date", "Change Type", "Symbol"]
+
+    #fix formatting - exporting to excel shows weird formatting YYYY-00-DD
+    for df in [index_df, composition_df, changes_df]:
+        df["Date"] = df["Date"].astype(str)
+
     # Used AI to do this part, reading docs & figuring out would have been time consuming
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
